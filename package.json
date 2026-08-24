@@ -1,0 +1,12 @@
+{
+  "name": "matsumi-rakuken",
+  "version": "1.0.0",
+  "description": "松美洛贤教育科技 - Cloudflare Pages 部署",
+  "scripts": {
+    "dev": "npx wrangler pages dev public --d1 DB=matsumi-db",
+    "deploy": "npx wrangler pages deploy public"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

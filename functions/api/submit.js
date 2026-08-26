@@ -26,13 +26,14 @@ export async function onRequestPost({ request, env }) {
   const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
 
   try {
-    const result = await env.DB.prepare(
-      'INSERT INTO submissions (name, phone, email, service, message, time, ip) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id'
-    ).bind(name, phone, email, service, message, time, ip).first();
-
-    return new Response(JSON.stringify({ success: true, id: String(result.id) }), { headers: cors });
+    const countStr = await env.DATA.get('count');
+    const id = (parseInt(countStr) || 0) + 1;
+    const entry = { id, name, phone, email, service, message, time, ip };
+    await env.DATA.put('count', String(id));
+    await env.DATA.put('submission_' + id, JSON.stringify(entry));
+    return new Response(JSON.stringify({ success: true, id: String(id) }), { headers: cors });
   } catch (e) {
-    return new Response(JSON.stringify({ error: 'Database error: ' + e.message }), { status: 500, headers: cors });
+    return new Response(JSON.stringify({ error: 'Storage error: ' + e.message }), { status: 500, headers: cors });
   }
 }
 

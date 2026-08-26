@@ -10,8 +10,9 @@ export async function onRequestGet({ request, env }) {
   }
 
   try {
-    const result = await env.DB.prepare('SELECT * FROM submissions ORDER BY id DESC').all();
-    const rows = result.results || [];
+    const list = await env.DATA.list({ prefix: 'submission_' });
+    const rows = await Promise.all(list.keys.map(k => env.DATA.get(k.name, 'json')));
+    rows.sort((a, b) => (b.id || 0) - (a.id || 0));
 
     const header = '编号,姓名,电话,邮箱,意向服务,留言内容,提交时间\n';
     const csvRows = rows.map(s => {
@@ -38,7 +39,7 @@ export async function onRequestGet({ request, env }) {
       },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: 'Database error: ' + e.message }), {
+    return new Response(JSON.stringify({ error: 'Storage error: ' + e.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json; charset=utf-8' },
     });

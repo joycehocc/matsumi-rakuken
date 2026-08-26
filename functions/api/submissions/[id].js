@@ -15,11 +15,11 @@ export async function onRequestDelete({ request, env, params }) {
 
   const id = params.id;
   try {
-    await env.DB.prepare('DELETE FROM submissions WHERE id = ?').bind(id).run();
-    const count = await env.DB.prepare('SELECT COUNT(*) as total FROM submissions').first();
-    return new Response(JSON.stringify({ success: true, total: count.total }), { headers: corsHeaders });
+    await env.DATA.delete('submission_' + id);
+    const list = await env.DATA.list({ prefix: 'submission_' });
+    return new Response(JSON.stringify({ success: true, total: list.keys.length }), { headers: corsHeaders });
   } catch (e) {
-    return new Response(JSON.stringify({ error: 'Database error: ' + e.message }), { status: 500, headers: corsHeaders });
+    return new Response(JSON.stringify({ error: 'Storage error: ' + e.message }), { status: 500, headers: corsHeaders });
   }
 }
 

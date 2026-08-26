@@ -4,3 +4,4 @@ pages_build_output_dir = "public"
 
 # KV namespace binding (在 Cloudflare Pages 设置中配置)
 # Variable name 必须是 DATA
+# Updated: trigger redeployment with correct file structure

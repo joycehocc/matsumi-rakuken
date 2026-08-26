@@ -219,7 +219,7 @@ function doLogin() {
   xhr.setRequestHeader('Content-Type', 'application/json');
   xhr.onreadystatechange = function() {
     if (xhr.readyState !== 4) return;
-    if (xhr.status === 0) { showLoginError('无法连接服务器，请确认 server.py 已启动'); return; }
+    if (xhr.status === 0) { showLoginError('无法连接服务器，请稍后重试'); return; }
     if (xhr.status === 401) { showLoginError('密码错误，请重试'); return; }
     try {
       var d = JSON.parse(xhr.responseText);
